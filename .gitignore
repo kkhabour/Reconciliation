@@ -1,7 +1,30 @@
+# Dependencies
 node_modules/
-*.log
-data.xlsx
+.pnpm-store/
+
+# Build output
 dist/
+
+# Environment variables
 .env
 !.env.example
-.DS_Store 
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generated files
+data.xlsx 

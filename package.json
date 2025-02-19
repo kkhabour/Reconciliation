@@ -4,23 +4,22 @@
   "description": "A Node.js project to process data and generate an Excel file with multiple tabs using TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node --no-warnings --loader ts-node/esm src/index.ts",
+    "start": "NODE_ENV=development node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
     "build": "tsc",
-    "clean": "rm -rf dist node_modules",
-    "prebuild": "pnpm run clean"
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
     "axios": "^1.0.0",
+    "dotenv": "^16.0.3",
     "exceljs": "^4.3.0",
-    "winston": "^3.8.2",
-    "dotenv": "^16.0.3"
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.0.0"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
   },
   "type": "module",
   "author": "Your Name",
   "license": "MIT"
-} 
+}

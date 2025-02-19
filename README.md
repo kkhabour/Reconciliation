@@ -1,121 +1,85 @@
-# My Node.js Project
+# Smartcore API Client
 
-## Overview
+A TypeScript-based API client for interacting with the Smartcore API, featuring automatic token refresh and comprehensive error handling.
 
-This project is a Node.js application that processes data into a multi-tab Excel file using ES6 syntax. It is designed to be clean, maintainable, and easy to extend.
+## Features
 
-## Project Structure
+- 🔐 Automatic token management and refresh
+- 📝 Comprehensive logging
+- ⚡ Type-safe API calls
+- 🔄 Request interceptors for authentication
+- 🛡️ Error handling with detailed logging
 
-The project is organized as follows:
+## Installation
 
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/smartcore-api-client.git
+
+# Install dependencies
+pnpm install
+
+# Copy environment file and modify with your credentials
+cp .env.example .env
 ```
-my-node-project/
-│
-├── src/
-│   ├── config/
-│   │   └── index.js         # Loads configuration and environment variables via dotenv
-│   ├── utils/
-│   │   ├── excelGenerator.js # Generates Excel files with a formatted "Summary" tab and dynamic tabs
-│   │   └── logger.js         # Logger setup using winston for colorful logging output
-│   └── index.js             # Main entry point of the application
-│
-├── .env.example             # Example environment file for required variables
-├── .gitignore               # Files and directories to be ignored by Git
-├── babel.config.json        # Babel configuration for transpiling modern JS code
-├── package.json             # Project metadata, scripts, and dependency definitions
-└── README.md                # Project documentation and usage instructions
-```
-
-## Dependencies
-
-- **exceljs:** For generating Excel files.
-- **winston:** For logging with colors and structured messages.
-- **dotenv:** For loading environment configurations via a `.env` file.
-- **@babel/cli, @babel/core, @babel/preset-env:** For transpiling ES6+ code (development only).
 
 ## Configuration
 
-The project supports configuration through the `src/config/index.js` file. Environment variables are loaded from a **.env** file in the project root.
-
-Create a `.env` file with contents similar to:
+Create a `.env` file in the root directory with the following variables:
 
 ```env
-SMARTCORE_BASE_URL=https://smartcore.prod.finamaze.com/
-API_URL=https://api.example.com/data
-EXCEL_FILE_PATH=data.xlsx
+SMARTCORE_BASE_URL=https://smartcore.prod.finamaze.com
+SMARTCORE_EMAIL=your-email
+SMARTCORE_PASSWORD=your-password
 ```
 
-Any values provided in the **.env** file will override the default values.
+## Usage
 
-## Excel Generator Module
+```typescript
+import { login } from './services/smartcore.service';
+import { smartcoreApi } from './services/smartcore.api';
 
-This project includes an Excel generator utility that can create a formatted "Summary" tab as well as dynamic additional tabs.
+// Login to get access token
+await login();
 
-### Features:
-- **Summary Tab:** Contains metrics (such as Report Date, Total Records Processed) with enhanced formatting (headings, borders, fill colors).
-- **Dynamic Tabs:** Create new worksheet tabs dynamically by specifying the sheet name, headers, and data. New tabs follow the same styling rules.
-
-### Functions:
-
-- `generateSummarySheet(workbook)`
-  - **Parameters:** 
-    - `workbook` (ExcelJS.Workbook): The workbook instance.
-  - **Description:** Creates the "Summary" tab with custom headers and sample metrics.
-
-- `addDynamicSheet(workbook, sheetName, headers, dataRows)`
-  - **Parameters:** 
-    - `workbook` (ExcelJS.Workbook): The workbook instance.
-    - `sheetName` (string): Desired name for the tab.
-    - `headers` (Array<string>): Array of header titles.
-    - `dataRows` (Array<Array<any>>): Array of rows (each row is an array of data).
-  - **Description:** Adds a new sheet with provided headers and rows, applying consistent styling.
-
-- `generateExcelFile(filePath, dynamicSheets)`
-  - **Parameters:**
-    - `filePath` (string): Output file path for the generated Excel file.
-    - `dynamicSheets` (Array<Object>): Array of sheet configuration objects { sheetName, headers, data }.
-  - **Usage Example:**
-
-```javascript
-import { generateExcelFile } from './utils/excelGenerator.js';
-
-async function runExample() {
-  const dynamicSheets = [
-    {
-      sheetName: 'Sales Data',
-      headers: ['Date', 'Region', 'Sales'],
-      data: [
-        ['2023-01-01', 'North', 1234],
-        ['2023-01-02', 'South', 2345]
-      ]
-    }
-  ];
-
-  await generateExcelFile('output.xlsx', dynamicSheets);
-}
-
-runExample();
+// Make API calls
+const holdings = await smartcoreApi.getReconciliationHoldings('123');
 ```
 
-### Installation:
-1. Ensure you have Node.js (latest stable version) installed.
-2. Install dependencies with **pnpm**:
-   ```bash
-   pnpm install
-   ```
-3. Run the application using:
-   ```bash
-   pnpm start
-   ```
+## Development
 
-## License
+```bash
+# Start in development mode
+pnpm start
 
-This project is licensed under the MIT License.
+# Build for production
+pnpm build
+
+# Clean build files
+pnpm clean
+```
+
+## Project Structure
+
+```
+src/
+├── config/
+│   └── index.ts         # Configuration management
+├── services/
+│   ├── smartcore.api.ts    # API endpoint implementations
+│   └── smartcore.service.ts # Core service with auth handling
+└── utils/
+    └── logger.ts        # Logging utility
+```
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request with your improvements.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Contact
+## License
 
-For any questions or issues, please contact [Your Name](mailto:your.email@example.com).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

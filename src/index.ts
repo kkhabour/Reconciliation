@@ -1,7 +1,25 @@
 import logger from './utils/logger.js';
+import { login } from './services/smartcore.service.js';
 
 async function main(): Promise<void> {
   logger.info('Main function started');
+  try {
+    await login();
+    // Now client is configured with the token and ready to use
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error(`Error in main: ${errorMessage}`);
+    process.exit(1);
+  }
 }
 
-main(); 
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+  logger.error('Unhandled promise rejection:', error);
+  process.exit(1);
+});
+
+main().catch((unhandledError) => {
+  logger.error('Unhandled error in main:', unhandledError);
+  process.exit(1);
+}); 
