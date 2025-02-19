@@ -1,12 +1,11 @@
 {
   "name": "my-node-project",
   "version": "1.0.0",
-  "description": "A Node.js project to fetch data from an API and generate an Excel file.",
-  "main": "src/index.js",
+  "description": "A Node.js project to process data and generate an Excel file with multiple tabs using TypeScript",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "build": "babel src -d dist",
-    "start:prod": "node dist/index.js",
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
     "clean": "rm -rf dist node_modules",
     "prebuild": "pnpm run clean"
   },
@@ -17,9 +16,9 @@
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0"
+    "@types/node": "^18.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.0.0"
   },
   "type": "module",
   "author": "Your Name",

@@ -14,9 +14,7 @@ const logger = winston.createLogger({
     colorize(),
     logFormat
   ),
-  transports: [
-    new winston.transports.Console()
-  ]
+  transports: [new winston.transports.Console()]
 });
 
 export default logger; 

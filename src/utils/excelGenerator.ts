@@ -7,9 +7,9 @@ import ExcelJS from 'exceljs';
  * - Reconciliation Date and Execution Date rows
  * - A header for metrics, followed by key metric rows
  *
- * @param {ExcelJS.Workbook} workbook - The workbook to which the Summary sheet will be added.
+ * @param workbook - The ExcelJS workbook instance
  */
-export function generateSummarySheet(workbook) {
+export function generateSummarySheet(workbook: ExcelJS.Workbook): void {
   const summarySheet = workbook.addWorksheet('Summary');
 
   // Setup two main columns with specified widths.
@@ -28,7 +28,7 @@ export function generateSummarySheet(workbook) {
   summarySheet.addRow([]);
 
   // Row for Reconciliation Date.
-  const recDate = new Date();
+  const recDate: Date = new Date();
   const recRow = summarySheet.addRow(["Reconciliation Date:", recDate.toLocaleDateString()]);
   recRow.eachCell((cell) => {
     cell.font = { bold: true };
@@ -36,7 +36,7 @@ export function generateSummarySheet(workbook) {
   });
 
   // Row for Execution Date.
-  const execDate = new Date();
+  const execDate: Date = new Date();
   const execRow = summarySheet.addRow(["Execution Date:", execDate.toLocaleDateString()]);
   execRow.eachCell((cell) => {
     cell.font = { bold: true };
@@ -92,22 +92,27 @@ export function generateSummarySheet(workbook) {
 /**
  * Adds a new worksheet (tab) with dynamic data and consistent styling.
  *
- * @param {ExcelJS.Workbook} workbook - The workbook instance.
- * @param {string} sheetName - The name of the new worksheet.
- * @param {Array<string>} headers - An array of header strings.
- * @param {Array<Array<any>>} dataRows - An array of rows, where each row is an array of values.
+ * @param workbook - The ExcelJS workbook instance.
+ * @param sheetName - The desired name for the new worksheet.
+ * @param headers - An array of header strings.
+ * @param dataRows - An array of rows, where each row is an array of values.
  */
-export function addDynamicSheet(workbook, sheetName, headers, dataRows) {
+export function addDynamicSheet(
+  workbook: ExcelJS.Workbook,
+  sheetName: string,
+  headers: string[],
+  dataRows: any[][]
+): void {
   const newSheet = workbook.addWorksheet(sheetName);
 
-  // Setup columns based on headers (keys generated from header text).
+  // Set columns using the headers.
   newSheet.columns = headers.map(header => ({
     header,
     key: header.toLowerCase().replace(/ /g, '_'),
     width: 20
   }));
 
-  // Style the header row with a blue background and white bold text.
+  // Style header row.
   newSheet.getRow(1).eachCell((cell) => {
     cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -120,7 +125,7 @@ export function addDynamicSheet(workbook, sheetName, headers, dataRows) {
     };
   });
 
-  // Add each data row with consistent borders and alignment.
+  // Populate rows.
   dataRows.forEach(rowData => {
     const row = newSheet.addRow(rowData);
     row.eachCell((cell) => {
@@ -136,29 +141,21 @@ export function addDynamicSheet(workbook, sheetName, headers, dataRows) {
 }
 
 /**
- * Generates an Excel file including a formatted Summary tab and dynamic tabs.
+ * Generates an Excel file with a formatted Summary tab and dynamic tabs.
  *
- * @param {string} filePath - The output file path for the generated Excel file.
- * @param {Array<Object>} dynamicSheets - Array of sheet configuration objects. Each object must include:
- *    - sheetName: {string} The name of the worksheet.
- *    - headers: {Array<string>} Array of header strings.
- *    - data: {Array<Array<any>>} Array of data rows.
- *
- * @example
- * const dynamicSheets = [{
- *   sheetName: 'Sales Data',
- *   headers: ['Date', 'Region', 'Sales'],
- *   data: [
- *     ['2023-01-01', 'North', 1234],
- *     ['2023-01-02', 'South', 2345],
- *   ]
- * }];
- * await generateExcelFile('output.xlsx', dynamicSheets);
+ * @param filePath - The output file path for the Excel file.
+ * @param dynamicSheets - Array of sheet configuration objects, each with properties:
+ *   - sheetName: string
+ *   - headers: string[]
+ *   - data: any[][]
  */
-export async function generateExcelFile(filePath, dynamicSheets = []) {
+export async function generateExcelFile(
+  filePath: string,
+  dynamicSheets: { sheetName: string; headers: string[]; data: any[][] }[] = []
+): Promise<void> {
   const workbook = new ExcelJS.Workbook();
 
-  // Create the Summary tab with enhanced formatting.
+  // Create the Summary tab.
   generateSummarySheet(workbook);
 
   // Add additional dynamic sheets.
@@ -166,7 +163,6 @@ export async function generateExcelFile(filePath, dynamicSheets = []) {
     addDynamicSheet(workbook, sheet.sheetName, sheet.headers, sheet.data);
   });
 
-  // Write the workbook to the specified file path.
   await workbook.xlsx.writeFile(filePath);
   console.log(`Excel file created successfully at ${filePath}`);
 } 
