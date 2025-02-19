@@ -4,7 +4,7 @@
   "description": "A Node.js project to process data and generate an Excel file with multiple tabs using TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node --no-warnings --loader ts-node/esm src/index.ts",
     "build": "tsc",
     "clean": "rm -rf dist node_modules",
     "prebuild": "pnpm run clean"
