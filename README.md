@@ -40,6 +40,7 @@ The project supports configuration through the `src/config/index.js` file. Envir
 Create a `.env` file with contents similar to:
 
 ```env
+SMARTCORE_BASE_URL=https://smartcore.prod.finamaze.com/
 API_URL=https://api.example.com/data
 EXCEL_FILE_PATH=data.xlsx
 ```
