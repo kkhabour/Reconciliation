@@ -28,4 +28,6 @@ pnpm-debug.log*
 Thumbs.db
 
 # Generated files
-data.xlsx 
+data.xlsx
+output/
+*.json 

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { client } from './smartcore.service.js';
 import logger from '../utils/logger.js';
+import { Holding, ApiError } from '../common/types';
 
 /**
  * Interface for holdings response
@@ -58,36 +59,6 @@ export const getReconciliationHoldings = async (reconciliationId: string): Promi
   }
 };
 
-// Add more API functions here
-// Example template for future endpoints:
-/*
-export const someApiCall = async (params: SomeParamsType): Promise<SomeResponseType> => {
-  try {
-    logger.info(`Starting someApiCall with params: ${JSON.stringify(params, null, 2)}`);
-    
-    const response = await client.get<SomeResponseType>(
-      ENDPOINTS.SOME_ENDPOINT,
-      { params }
-    );
-
-    logger.info('Successfully completed someApiCall');
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorInfo = {
-        status: error.response?.status,
-        url: error.config?.url,
-        message: error.message,
-        params
-      };
-      logger.error(`someApiCall failed: ${JSON.stringify(errorInfo, null, 2)}`);
-    } else {
-      logger.error(`Unexpected error in someApiCall: ${JSON.stringify(error, null, 2)}`);
-    }
-    throw error;
-  }
-};
-*/
 
 // Export all API functions
 export const smartcoreApi = {

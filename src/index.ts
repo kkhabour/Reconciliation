@@ -1,10 +1,10 @@
 import logger from './utils/logger.js';
-import { login } from './services/smartcore.service.js';
+import { assetsEod } from './utils/assets.eod.js';
 
 async function main(): Promise<void> {
   logger.info('Main function started');
   try {
-    await login();
+    await assetsEod();
     // Now client is configured with the token and ready to use
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);

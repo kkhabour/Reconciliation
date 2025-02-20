@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { config } from '../config/index.js';
 import logger from '../utils/logger.js';
+import { LoginResponse, LoginCredentials, ApiConfig } from '../common/types';
 
 // Types
 interface TokenResponse {
