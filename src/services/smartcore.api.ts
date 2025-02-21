@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { client } from './smartcore.service.js';
 import logger from '../utils/logger.js';
-import { Holding, ApiError } from '../common/types';
+import { Holding, ApiError, Investment } from '../common/types';
 
 /**
  * Interface for holdings response
@@ -13,10 +13,22 @@ interface Holdings {
 }
 
 /**
+ * Interface for cash response
+ */
+interface Cash {
+  // Add your cash response type here
+  [key: string]: any;
+}
+
+
+
+/**
  * API Endpoints
  */
 const ENDPOINTS = {
   HOLDINGS: (id: string) => `/api/v1/reconciliations/${id}/holdings`,
+  CASH: (id: string) => `/api/v1/reconciliations/${id}/cash`,  // New endpoint
+  INVESTMENTS: '/api/v1/investments/',  // New endpoint
   // Add other endpoints here as needed
 } as const;
 
@@ -59,9 +71,90 @@ export const getReconciliationHoldings = async (reconciliationId: string): Promi
   }
 };
 
+/**
+ * Get cash data for a specific reconciliation
+ * @param reconciliationId - The ID of the reconciliation
+ * @returns Promise<Cash>
+ * 
+ * @example
+ * const cash = await getReconciliationCash('52');
+ */
+export const getReconciliationCash = async (reconciliationId: string): Promise<Cash> => {
+  try {
+    logger.info(`Fetching cash data for reconciliation ID: ${reconciliationId}`);
+    
+    const response = await client.get<Cash>(
+      ENDPOINTS.CASH(reconciliationId),
+      {
+        headers: {
+          'accept': 'application/json'
+        }
+      }
+    );
+
+    logger.info(`Successfully retrieved cash data for reconciliation ID: ${reconciliationId}`);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const errorInfo = {
+        status: error.response?.status,
+        url: error.config?.url,
+        message: error.message,
+        reconciliationId
+      };
+      logger.error(`Failed to fetch cash data: ${JSON.stringify(errorInfo, null, 2)}`);
+    } else {
+      logger.error(`Unexpected error while fetching cash data: ${JSON.stringify(error, null, 2)}`);
+    }
+    throw error;
+  }
+};
+
+/**
+ * Get investments data with pagination
+ * @returns Promise<Investment[]>
+ */
+export const getInvestments = async (): Promise<Investment[]> => {
+  try {
+    logger.info('Fetching investments data');
+    
+    const response = await client.get<{ data: Investment[] }>(
+      ENDPOINTS.INVESTMENTS,
+      {
+        headers: {
+          'accept': 'application/json'
+        },
+        params: {
+          sort_order: 'desc',
+          hard_refresh: false,
+          page_number: 1,
+          page_size: 100000
+        }
+      }
+    );
+
+    logger.info('Successfully retrieved investments data');
+    return response.data.data;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const errorInfo = {
+        status: error.response?.status,
+        url: error.config?.url,
+        message: error.message
+      };
+      logger.error(`Failed to fetch investments: ${JSON.stringify(errorInfo, null, 2)}`);
+    } else {
+      logger.error(`Unexpected error while fetching investments: ${JSON.stringify(error, null, 2)}`);
+    }
+    throw error;
+  }
+};
+
 
 // Export all API functions
 export const smartcoreApi = {
   getReconciliationHoldings,
+  getReconciliationCash,
+  getInvestments,
   // Add other functions here as they are created
 }; 

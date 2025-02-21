@@ -61,7 +61,6 @@ export function createSummaryTab(data: Holding[]): TabData {
     headers: ['', '', '', ''],
     data: [
       ...createDetailedSummary(data),
-      ...createBrokerSummary(data)
     ]
   };
 } 

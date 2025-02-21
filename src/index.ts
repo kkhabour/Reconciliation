@@ -1,10 +1,11 @@
 import logger from './utils/logger.js';
 import { assetsEod } from './utils/assets.eod.js';
-
+import { generateCashReport } from './utils/cash.eod.js';
 async function main(): Promise<void> {
   logger.info('Main function started');
   try {
-    await assetsEod();
+    // await assetsEod();
+    await generateCashReport();
     // Now client is configured with the token and ready to use
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);

@@ -15,39 +15,28 @@ async function addWorksheet(workbook: ExcelJS.Workbook, config: SheetConfig): Pr
   const { sheetName, headers, data } = config;
   const sheet = workbook.addWorksheet(sheetName);
 
-  // Set columns
-  sheet.columns = headers.map(header => ({
-    header,
-    key: header.toLowerCase().replace(/ /g, '_'),
-    width: 20
-  }));
-
-  // Style header row
-  sheet.getRow(1).eachCell((cell) => {
-    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
-    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+  // Set columns with number format
+  sheet.columns = headers.map((header, index) => {
+    const column: Partial<ExcelJS.Column> = {
+      header,
+      key: header.toLowerCase().replace(/ /g, '_'),
+      width: 20
+    };
+    
+    // Apply number format to specific columns
+    if (index === 1 || index === 2 || index === 3) { // B, C, D columns
+      column.style = { numFmt: '#,##0.00' };
+    }
+    
+    return column;
   });
 
   // Add data rows
-  data.forEach(rowData => {
-    const row = sheet.addRow(rowData);
-    row.eachCell((cell) => {
-      cell.alignment = { horizontal: 'left', vertical: 'middle' };
-    });
-  });
+  sheet.addRows(data);
 
-  // Add borders to all cells
-  sheet.eachRow((row) => {
-    row.eachCell((cell) => {
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
-    });
-  });
+  // Style the header row
+  const headerRow = sheet.getRow(1);
+  headerRow.font = { bold: true };
 }
 
 /**
