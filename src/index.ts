@@ -4,7 +4,7 @@ import { generateCashReport } from './utils/cash.eod.js';
 async function main(): Promise<void> {
   logger.info('Main function started');
   try {
-    // await assetsEod();
+    await assetsEod();
     await generateCashReport();
     // Now client is configured with the token and ready to use
   } catch (error: unknown) {
@@ -15,12 +15,12 @@ async function main(): Promise<void> {
 }
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (error) => {
+process.on('unhandledRejection', error => {
   logger.error('Unhandled promise rejection:', error);
   process.exit(1);
 });
 
-main().catch((unhandledError) => {
+main().catch(unhandledError => {
   logger.error('Unhandled error in main:', unhandledError);
   process.exit(1);
-}); 
+});

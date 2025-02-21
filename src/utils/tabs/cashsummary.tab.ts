@@ -31,7 +31,13 @@ export function createSummaryTab(data: Cash[]): TabData {
     [{ value: 'Summary', style: sectionTitleStyle }, ''],
     [
       { value: 'Sum of All Clients Internal Cash Balances', style: labelStyle },
-      { value: { formula: "'Client Cash'!G190" }, style: { numFmt: '"$"#,##0.00' } },
+      {
+        value: {
+          formula:
+            "=SUBTOTAL(9,'Client Cash'!G2:INDEX('Client Cash'!G:G,MATCH(\"Total\",'Client Cash'!A:A,0)-1))",
+        },
+        style: { numFmt: '"$"#,##0.00' },
+      },
     ],
     [
       { value: 'Sum of All Clients 3rd Party Cash Balances', style: labelStyle },
