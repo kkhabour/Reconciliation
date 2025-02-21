@@ -9,6 +9,7 @@ import { createClientCashTab } from './tabs/clientcash.tab.js';
 import { createClientActivityTab } from './tabs/clientactivity.tab.js';
 import { createClientCreditBalancesTab } from './tabs/clientcreditbalances.tab.js';
 import { createClientDebitsBalancesTab } from './tabs/clientdebitbalances.tab.js';
+import { createSummaryTab } from './tabs/cashsummary.tab.js';
 /**
  * Generates an Excel file with cash reconciliation data
  */
@@ -72,6 +73,7 @@ export async function generateCashReport(): Promise<void> {
 
     // Create tabs
     const tabs = [
+      createSummaryTab(data),
       createCashTab(data),
       createClientCashTab(data),
       createClientActivityTab(data),
