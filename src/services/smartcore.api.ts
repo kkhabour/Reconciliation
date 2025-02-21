@@ -20,7 +20,13 @@ interface Cash {
   [key: string]: any;
 }
 
-
+/**
+ * Interface for transaction response
+ */
+interface Transaction {
+  // Add your transaction response type here
+  [key: string]: any;
+}
 
 /**
  * API Endpoints
@@ -29,6 +35,7 @@ const ENDPOINTS = {
   HOLDINGS: (id: string) => `/api/v1/reconciliations/${id}/holdings`,
   CASH: (id: string) => `/api/v1/reconciliations/${id}/cash`,  // New endpoint
   INVESTMENTS: '/api/v1/investments/',  // New endpoint
+  TRANSACTIONS: '/api/v1/transactions/',  // New endpoint
   // Add other endpoints here as needed
 } as const;
 
@@ -150,11 +157,51 @@ export const getInvestments = async (): Promise<Investment[]> => {
   }
 };
 
+/**
+ * Get all transactions with pagination
+ */
+export const getTransactions = async (pageSize = 100000, pageNumber = 1, sortOrder = 'desc'): Promise<Transaction[]> => {
+  const params = new URLSearchParams({
+    sort_order: sortOrder,
+    page_number: pageNumber.toString(),
+    page_size: pageSize.toString()
+  });
+
+  try {
+    logger.info('Fetching transactions data');
+    
+    const response = await client.get<{ data: Transaction[] }>(
+      ENDPOINTS.TRANSACTIONS,
+      {
+        headers: {
+          'accept': 'application/json'
+        },
+        params: params
+      }
+    );
+
+    logger.info('Successfully retrieved transactions data');
+    return response.data.data;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const errorInfo = {
+        status: error.response?.status,
+        url: error.config?.url,
+        message: error.message
+      };
+      logger.error(`Failed to fetch transactions: ${JSON.stringify(errorInfo, null, 2)}`);
+    } else {
+      logger.error(`Unexpected error while fetching transactions: ${JSON.stringify(error, null, 2)}`);
+    }
+    throw error;
+  }
+};
 
 // Export all API functions
 export const smartcoreApi = {
   getReconciliationHoldings,
   getReconciliationCash,
   getInvestments,
+  getTransactions,
   // Add other functions here as they are created
 }; 

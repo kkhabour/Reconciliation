@@ -3,6 +3,24 @@ export interface TabData {
   sheetName: string;
   headers: string[];
   data: any[][];
+  columnStyles?: { [key: number]: CellStyle };
+}
+
+export interface CellStyle {
+  fill?: {
+    type: 'pattern';
+    pattern: 'solid';
+    fgColor: { argb: string };
+  };
+  font?: {
+    color?: { argb: string };
+    bold?: boolean;
+  };
+  alignment?: {
+    horizontal?: 'left' | 'center' | 'right';
+    vertical?: 'top' | 'middle' | 'bottom';
+  };
+  numFmt?: string;
 }
 
 export interface Broker {
@@ -637,4 +655,34 @@ export type Cash = {
     };
     reconciled: boolean;
   }[];
+  investments?: Investment[];
+};
+
+export interface Transaction {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    tag: string;
+    label: string;
+    category: string;
+    note: string;
+    user_id: number;
+    manager_id: number | null;
+    admin_id: number;
+    amount: number;
+    side: string;
+    investment_id: number;
+    private_investment_id: number | null;
+    investment_event_id: number | null;
+    order_id: number | null;
+    account_id: number;
+    dividend_id: number | null;
+    capitalcall_id: number | null;
+    cashback_id: number | null;
+    split_event_id: number | null;
+    status: string;
+    request_id: number | null;
+    request_msg: string | null;
+    reference: string | null;
+    currency: string;
 };

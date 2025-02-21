@@ -5,11 +5,12 @@ import { Cash, TabData } from '../../common/types';
  */
 function getColumnHeaders(): string[] {
   return [
-    'Client Account',
-    'Available Cash',
-    'Activity Total',
-    'Difference',
-    'Reconciled'
+    'Client ID',
+    'Client Name',
+    'System Balance',
+    'Activity Balance',
+    'Variance',
+    'Status'
   ];
 }
 
@@ -20,22 +21,20 @@ function transformCashToRow(cashItem: Cash, rowIndex: number): any[] {
   return cashItem.accounts.map(account => {
     const currentRow = rowIndex + 2;
     return [
-      `C${cashItem.id}`,
+      `C${cashItem.id}`, 
+      `${cashItem.first_name} ${cashItem.last_name}`,
       account.system.balance,
       account.activity.balance,
-      { formula: `B${currentRow}-C${currentRow}` },
+      { value: { formula: `C${currentRow}-D${currentRow}` } },
       { 
-        formula: `IF(D${currentRow}=0,"Yes","No")`,
+        value: { formula: `IF(E${currentRow}=0,"Yes","No")` },
         style: {
           fill: {
             type: 'pattern',
             pattern: 'solid',
-            fgColor: { argb: `FF${account.difference.available === 0 ? '92D050' : 'FF6B6B'}` }
+            fgColor: { argb: account.difference.available === 0 ? 'FF92D050' : 'FFFF6B6B' }
           },
-          font: { 
-            color: { argb: 'FFFFFFFF' },
-            bold: true
-          },
+          font: { color: { argb: 'FFFFFFFF' }, bold: true },
           alignment: { horizontal: 'center' }
         }
       }
@@ -53,21 +52,15 @@ export function createCashTab(data: Cash[]): TabData {
   // Add total row
   const totalRow = [
     'Total',
-    { formula: `SUM(B2:B${totalRowNumber-1})` },
-    { formula: `SUM(C2:C${totalRowNumber-1})` },
-    { formula: `B${totalRowNumber}-C${totalRowNumber}` },
+    '',
+    { value: { formula: `SUM(C2:C${totalRowNumber-1})` }, style: { numFmt: '"$"#,##0.00' } },
+    { value: { formula: `SUM(D2:D${totalRowNumber-1})` }, style: { numFmt: '"$"#,##0.00' } },
+    { value: { formula: `C${totalRowNumber}-D${totalRowNumber}` }, style: { numFmt: '"$"#,##0.00' } },
     { 
-      formula: `IF(D${totalRowNumber}=0,"Yes","No")`,
+      value: { formula: `IF(E${totalRowNumber}=0,"Yes","No")` },
       style: {
-        fill: {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FF92D050' }  // Default to green for total row
-        },
-        font: { 
-          color: { argb: 'FFFFFFFF' },
-          bold: true
-        },
+        fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF92D050' } },
+        font: { color: { argb: 'FFFFFFFF' }, bold: true },
         alignment: { horizontal: 'center' }
       }
     }
@@ -78,6 +71,11 @@ export function createCashTab(data: Cash[]): TabData {
   return {
     sheetName: 'Activity Vs Cash',
     headers: getColumnHeaders(),
-    data: cashRows
+    data: cashRows,
+    columnStyles: {
+      3: { numFmt: '"$"#,##0.00' },  // System Balance column (C)
+      4: { numFmt: '"$"#,##0.00' },  // Activity Balance column (D)
+      5: { numFmt: '"$"#,##0.00' }   // Variance column (E)
+    }
   };
 } 
